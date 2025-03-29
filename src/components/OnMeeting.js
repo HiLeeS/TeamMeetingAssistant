@@ -3,12 +3,12 @@ import { Card, CardContent } from "./ui/card";
 import { useNavigate } from "react-router-dom"; 
 import MeetingLoading from "./MeetingLoading"; 
 import React, { useState } from "react";
-import useFakeWebSocket from "../hooks/useFakeWebSocket"; 
+import useWebSocket from "../hooks/useWebSocket"; 
 
 const OnMeeting = () => {
     const navigate = useNavigate(); 
     const [loading, setLoading] = useState(false); 
-    const participants = useFakeWebSocket(); 
+    const participants = useWebSocket(); 
 
     // 토큰과 코드 가져오기
     const token = localStorage.getItem("token");

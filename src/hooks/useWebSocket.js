@@ -1,44 +1,41 @@
-// src/hooks/useWebSocket.js
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const useWebSocket = (username, code) => {
+const useFakeWebSocket = () => {
   const [participants, setParticipants] = useState([]);
-  const clientRef = useRef(null);
 
   useEffect(() => {
-    const socket = new SockJS('http://localhost:8080/'); // 나중에 백엔드 주소
-    const client = new Client({
-      webSocketFactory: () => socket,
-      onConnect: () => {
-        console.log("🔗 Connected to WebSocket");
+    const fakeUsers = [
+      { id: 1, name: "서연", bgColor: "bg-[#ff6edf52]" },
+      { id: 2, name: "승준", bgColor: "bg-[#f6ccd3]" },
+      { id: 3, name: "유석", bgColor: "bg-[#d5eaff]" },
+      { id: 4, name: "성원", bgColor: "bg-[#fffade]" },
+    ];
 
-        // 참가자 수신
-        client.subscribe("/topic/participants", (message) => {
-          const newParticipant = JSON.parse(message.body);
-          setParticipants((prev) => [...prev, newParticipant]);
-        });
+    let index = 0;
 
-        // 참가자 입장 브로드캐스트
-        client.publish({
-          destination: "/app/join",
-          body: JSON.stringify({ name: username, meetingCode: code }),
-        });
-      },
-      onDisconnect: () => console.log("❌ WebSocket disconnected"),
-      reconnectDelay: 5000,
-    });
+    const interval = setInterval(() => {
+      if (index < fakeUsers.length) {
+        const user = fakeUsers[index];
 
-    client.activate();
-    clientRef.current = client;
+        // ✅ 방어 코드 추가
+        if (user && user.bgColor && user.name) {
+          console.log("참가자 추가됨:", user); // 로그 찍기
+          setParticipants(prev => [...prev, user]);
+        } else {
+          console.warn("잘못된 참가자 데이터:", user);
+        }
 
-    return () => {
-      clientRef.current?.deactivate();
-    };
-  }, [username, code]);
+        index++;
+      } else {
+        clearInterval(interval);
+        console.log("✅ 모든 참가자 추가 완료");
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return participants;
 };
 
-export default useWebSocket;
+export default useFakeWebSocket;
