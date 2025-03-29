@@ -5,10 +5,10 @@ const useFakeWebSocket = () => {
 
   useEffect(() => {
     const fakeUsers = [
-      { id: 1, name: "Name1", bgColor: "bg-[#ff6edf52]" },
-      { id: 2, name: "Name2", bgColor: "bg-[#f6ccd3]" },
-      { id: 3, name: "Name3", bgColor: "bg-[#d5eaff]" },
-      { id: 4, name: "Name4", bgColor: "bg-[#fffade]" },
+      { id: 1, name: "서연", bgColor: "bg-[#ff6edf52]" },
+      { id: 2, name: "승준", bgColor: "bg-[#f6ccd3]" },
+      { id: 3, name: "유석", bgColor: "bg-[#d5eaff]" },
+      { id: 4, name: "성원", bgColor: "bg-[#fffade]" },
     ];
 
     let index = 0;

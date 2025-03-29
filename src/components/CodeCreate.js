@@ -9,34 +9,39 @@ const CodeCreate = () => {
   const [codeValue, setCodeValue] = useState("");
   const [meetingName, setMeetingName] = useState("");  // 회의 이름 상태 추가
 
- // 코드 생성 함수
-const createCode = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!meetingName) {
-      alert("회의 이름을 입력하세요!");
-      return;
-    }
-
-    // 백엔드로 코드 생성 요청
-    const response = await axios.post(
-      `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8080/meeting"}?title=${encodeURIComponent(meetingName)}`,
-      {},  // 빈 객체로 POST 요청 본문
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token ? `Bearer ${token}` : ""
-        }
+  const createCode = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!meetingName) {
+        alert("회의 이름을 입력하세요!");
+        return;
       }
-    );
-
-    console.log("서버 응답:", response.data);  // 응답 확인
-    setCodeValue(response.data);  // 반환된 코드 값으로 상태 업데이트
-  } catch (error) {
-    console.error("서버 요청 실패:", error);
-    alert("코드 생성 실패! 다시 시도해 주세요.");
-  }
-};
+  
+      // 백엔드로 코드 생성 요청
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8080/meeting"}?title=${encodeURIComponent(meetingName)}`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : ""
+          }
+        }
+      );
+  
+      const generatedCode = response.data;
+      console.log("서버 응답:", generatedCode);
+  
+      // ✅ 코드 값을 로컬 스토리지에 저장
+      localStorage.setItem("code", generatedCode);
+  
+      setCodeValue(generatedCode);
+    } catch (error) {
+      console.error("서버 요청 실패:", error);
+      alert("코드 생성 실패! 다시 시도해 주세요.");
+    }
+  };
+  
 
 
   return (
